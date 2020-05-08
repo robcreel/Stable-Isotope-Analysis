@@ -1,0 +1,43 @@
+Site ID,name,Location,Coordinates,Landscape,Climate,Reference,Site PI,Data Available
+1,Bermuda Island,"Bermuda Island, England","32°15’N, 64°52’W",Coast,Dwa,Steen-Larsen et al. (2015),Hans Christian Steen-Larsen,In prep.
+2,Beijing,"Beijing, China","40°0’N, 116°3’E",Urban,Dwa,Wen et al. (2010),Xuhui Lee and Xuefa Wen,Yes
+3,caborden,"Borden, Canada","44°9′N, 79°6′W",forest,Dfb,Santos et al. (2012),Xuhui Lee,Yes
+4,Camargue,"Vaccarès lagoon, France","43°35’N, 4°28’E",Wetland,Csb,Delattre et al. (2015),Christine Vallet-Coulomb,Yes
+5,Dome C,"Concordia, South Pole","75°06′S, 123°23′E",Ice Sheet,-,Casado et al (2016),Mathieu Casado,Yes
+6,Duolun,"Inner Mongolia, China","42°2′N, 116°7′E",Grassland,Dwb,Hu et al. (2014),Xuhui Lee and Xuefa Wen,Yes
+7,Heihe,"Hehei, China","38°1’N, 100°2’E",Cropland,Csb,Wen et al. (2016),Xuefa Wen,Yes
+8,Kourovka,"Kourovka, Russia","57.037N, 59.547E",Forest,Dfb,Bastrikov et al. (2014),Konstantin Gribanov,Yes
+9,Karlsruhe,"Karlsruhe, Germany","49.10N, 8.44E",Snow,Dfb,Christner et al. (2017),Emanuel Christner,Yes
+10,Luancheng,"Shijiazhuang, China","37.00N, 114.00E",Cropland,Bsk,Wen et al. (2012),Xuhui Lee and Xuefa Wen,Yes
+11,usmanitouforests,"Colorado, USA","39.08N, 105.07W",Forest,Dfc,Berkelhammer et al. (2016),Max Berkelhammer,Yes
+12,Mase,"Tsukuba, Japan","36.054N, 140.027E",Cropland,Cfa,Wei et al. (2016),Kei Yoshimura,Yes
+13,Mpala,"Laikipia, Kenya","0.486°N, 36.870°E",Savanna,Bsk,Good et al. (2012),Kelly K. Caylor,Merra-2
+14,Nagoya,"Nagoya, Japan","35.15N, 136.97E",Urban,Cfa,Kurita et al. (2015),Naoyuki Kurita,Merra-2
+15,NEEM,Greenland,"77°27’N, 51°03’W",Ice Sheet,-,Steen-Larsen et al. (2016),Hans Christian Steen-Larsen,Yes
+16,usgreatmountain,"CT, USA","41.98N, 73.23W",Forest,Cfa,Lee et al. (2007),Xuhui Lee,Yes
+17,usnewhaven,"CT, USA","41°8′ N, 72°5′ W",Urban,Cfa,Welp et al. (2012),Xuhui Lee,Yes
+18,usnewotridge,"Colorado, USA","40.03N, 105.55W",Forest,Dfc,Berkelhammer et al. (2016),Max Berkelhammer,Yes
+19,Qianyanzhou,"Jiangxi, China","26°4’52”N, 115°3’47”E",Forest,Cfa,Yang et al. (2015),Xuefa Wen,Yes
+20,Rietholzbach,"Northeastern Swiss Prealps, Swiss","47.38N, 8.99E",Grassland,Cfb,Aemisegger et al. (2014),Franziska Aemisegger,Yes
+21,usrosemount,"MN, USA","44.72°N, 93.10°W",Cropland,Dfb,Griffis et al. (2011),Timothy J. Griffis,Yes
+22,Ship:ACTIV,Atlantic,"56°11’N, 12°20’E",Ocean,-,Benetti et al. (2017),"Marion Benetti, Hans Christian Steen-Larsen",Yes
+23,shipbermuda,Atlantic,"32.054N, -64.430E",Ocean,-,Benetti et al. (2017),"Marion Benetti, Hans Christian Steen-Larsen",Yes
+24,Ship: PIRATAFR24,Atlantic,"5.065N, -4.000E",Ocean,-,Benetti et al. (2017),"Marion Benetti, Hans Christian Steen-Larsen",Yes
+25,Ship: RARA AVIS,Atlantic,"48.367N, -4.491E",Ocean,-,Benetti et al. (2017),"Marion Benetti, Hans Christian Steen-Larsen",Yes
+26,Ship: STRASSE,Atlantic,"27.506N, -17.098E",Ocean,-,Benetti et al. (2017),"Marion Benetti, Hans Christian Steen-Larsen",Yes
+27,Ship: JARE 55,Austalia and Syowa base,"-31.967N, 115.675E",Ocean,-,Kurita et al. (2016),Naoyuki Kurita,Yes
+28,Svalbard,"Svalbard, Norway","78°55’N, 11°55’E",Ice sheet,Bsk,Steen-Larsen et al. (2016),Hans Christian Steen-Larsen,In prep.
+29,South coast of Iceland,North Atlantic,"63°49’N, 21°28’W",Coast,-,Steen-Larsen et al. (2016),Hans Christian Steen-Larsen,In prep.
+30,South Greenland,Greenland,"61°12’N, 47°10’W",Ice sheet,-,Steen-Larsen et al. (2016),Hans Christian Steen-Larsen,Yes
+31,Taihu,"Jiangsu, China","30.09N, 119.88E",Lake,Cfa,Lee et al. (2014),Xuhui Lee,Yes
+32,Taibei,Chinese Taipei,"25°1’N, 121°30’E",Urban/Coast,-,Laskar et al. (2014),Danie Liang,Yes
+33,Trinity Beach,"Cairns, Australia","16° 47.5’S, 145°41.8’E",Coast,-,Munksgaard et al. (2015),Niels C. Munksgaard,Yes
+34,Gaoqiao,"Zhanjiang Mangrove National Nature Reserve, China","21°34′ N, 109°45′E",Coast,-,-,Jonathon Wright and Guanghui Lin,Yes
+35,Teide,"Canary Islands, Spain","28.3° N, 16.5° W",Mountain,,González et al. (2016),Matthias Schneider,Yes
+36,Izana,"Canary Islands, Spain","28.2° N, 16.4° W",Mountain,,González et al. (2016),Matthias Schneider,Yes
+37,Las Palmas airport,"Canary Islands, Spain","27.9N, -15.37E",Airborne,,Dyroff et al. (2016),Matthias Schneider,Yes
+38,HyMeX SOP1 campaign,"Corsica, French","42°33’ N, 9° 29’ E",Airborne,,Sodemann et al. (2017),Harald Sodemann,-
+39,Kohnen,Antarctic Plateau,"75°00’S, 0°04’E",Ice sheet,,Ritter et al. (2016),François Ritter,Yes
+40,Camp Davis Rocky Mountain,"Wyoming, US","43.283°N, 110.659°W",Mountain valley,,Fiorella et al. (2018),Richard P. Fiorella,Yes
+41,Indianapolis Flight,"Indianapolis, US","40.4135° N, -86.9473°E",Airborne,,,"Welp-Smith, Lisa",Yes
+42,"Washington, D.C. Flight","Washington, D.C.-Baltimore, MD, US","38.7259° N, -77.5204° E",Airborne,,,"Welp-Smith, Lisa",Yes

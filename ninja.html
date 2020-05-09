@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Stable Isotope Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Max, Philippe, Rob, Shasta, Tom" />
+    <meta name="date" content="2020-05-09" />
+    <script src="libs/header-attrs-2.1/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Stable Isotope Analysis
+## Analytical Methods in R
+### Max, Philippe, Rob, Shasta, Tom
+### Northwestern University Data Visualization Program
+### 2020-05-09
+
+---
+
+&lt;style type="text/css"&gt;
+.remark-slide-content {
+    font-size: 28px;
+    padding: 1em 2em 1em 2em;
+}
+&lt;/style&gt;
+
+
+
+## SIA
+
+* Stable Isotope Analysis
+
+---
+## SIA
+![The Performer](sia.png)
+
+---
+## Loading the data
+
+```r
+# Load required libraries.
+library(tidyverse)
+library(lubridate)
+
+# Read local csv file, munging it slightly.
+df_mega &lt;- read_csv("mega.csv")
+df_mega %&gt;% mutate(TIMESTAMP = ymd_hm(TIMESTAMP)) %&gt;% drop_na() %&gt;% 
+  select(TIMESTAMP, Delta_18O, Delta_D, Location = Name) -&gt; df_mega
+df_mega %&gt;% head() %&gt;% print()
+```
+
+```
+## # A tibble: 6 x 4
+##   TIMESTAMP           Delta_18O Delta_D Location
+##   &lt;dttm&gt;                  &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   
+## 1 2013-06-18 15:00:00     -13.6   -126. Teide   
+## 2 2013-06-18 16:00:00     -15.8   -146. Teide   
+## 3 2013-06-18 17:00:00     -20.7   -183. Teide   
+## 4 2013-06-18 18:00:00     -25.9   -224. Teide   
+## 5 2013-06-18 19:00:00     -26.9   -231. Teide   
+## 6 2013-06-18 20:00:00     -29.5   -252. Teide
+```
+
+---
+
+## Plots
+
+```r
+df_mega %&gt;% 
+  ggplot(aes(x = TIMESTAMP, y = Concentration, color = variable)) +
+  geom_point(aes(y = Delta_18O, col = "Delta_18O")) + 
+  geom_point(aes(y = Delta_D, col = "Delta_D")) +
+  facet_wrap(Location ~ ., ncol = 8) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 1))
+```
+
+&lt;img src="ninja_files/figure-html/plots-1.png" width="95%" /&gt;
+text
+---
+
+## Plots
+
+```r
+df_mega %&gt;% 
+  filter(Location %in% c("Taihu", "Teide")) %&gt;% 
+  ggplot(aes(x = TIMESTAMP, y = Concentration, color = variable)) +
+  geom_point(aes(y = Delta_18O, col = "Delta_18O")) + 
+  geom_point(aes(y = Delta_D, col = "Delta_D")) +
+  facet_wrap(Location ~ .) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 1))
+```
+
+&lt;img src="ninja_files/figure-html/fewer_plots-1.png" width="95%" /&gt;
+
+---
+
+## Plots
+
+```r
+df_mega %&gt;% 
+  ggplot(aes(x = Delta_18O, y = Delta_D, color = Location)) +
+  geom_point()
+```
+
+&lt;img src="ninja_files/figure-html/OD_plot-1.png" width="95%" /&gt;
+
+
+---
+
+## Plots
+
+```r
+df_mega %&gt;% 
+  ggplot(aes(x = Delta_18O, y = Delta_D, color = Location)) +
+  geom_point() + 
+  facet_wrap(Location ~ .)
+```
+
+&lt;img src="ninja_files/figure-html/OD_plot_all-1.png" width="95%" /&gt;
+
+
+---
+
+## Neural Network
+
+We attempt to classify Location with a neural network predicting on isotope concentration.
+
+
+```r
+library(tidyverse)
+library(lubridate)
+library(caTools)
+library(h2o)
+
+# Preprocess the data
+data_file = "mega.csv"
+data_file %&gt;% read_csv() %&gt;% 
+  mutate(TIMESTAMP = ymd_hm(TIMESTAMP)) %&gt;% 
+  drop_na() %&gt;% 
+  select(Delta_18O, Delta_D, Location = Name) -&gt; dataset 
+
+# Encode the Location
+loc_levels = dataset$Location %&gt;% unique()
+dataset$Location = as.numeric(factor(dataset$Location, 
+                                     levels = loc_levels,
+                                     labels = 1:length(loc_levels)))
+```
+---
+
+## Neural Network
+Nothing fancy here.
+
+```r
+set.seed(123)
+split = sample.split(dataset$Location, SplitRatio = 0.8)
+training_set = subset(dataset, split == TRUE)
+test_set = subset(dataset, split == FALSE)
+
+training_set[-3] = scale(training_set[-3])
+test_set[-3] = scale(test_set[-3])
+```
+
+---
+
+## Neural Network
+Launch h20 localhost server, build the model, and predict.
+
+
+```r
+h2o.init(nthreads = -1)
+classifier = h2o.deeplearning(y = 'Location',
+                              training_frame = as.h2o(training_set), 
+                              activation = 'Tanh',
+                              epochs = 100, 
+                              train_samples_per_iteration = -2) 
+
+prob_pred = h2o.predict(classifier, newdata = as.h2o(training_set[-3]))
+y_pred = (prob_pred &gt; 0.5)
+h2o.shutdown()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

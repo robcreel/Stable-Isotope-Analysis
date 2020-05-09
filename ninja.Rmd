@@ -1,0 +1,167 @@
+---
+title: "Stable Isotope Analysis"
+subtitle: "Analytical Methods in R"
+author: "Max, Philippe, Rob, Shasta, Tom"
+institute: "Northwestern University Data Visualization Program"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    larger: true
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+<style type="text/css">
+.remark-slide-content {
+    font-size: 28px;
+    padding: 1em 2em 1em 2em;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, warning=FALSE, message=FALSE, cache = TRUE)
+```
+
+## SIA
+
+* Stable Isotope Analysis
+
+---
+## SIA
+![The Performer](sia.png)
+
+---
+## Loading the data
+```{r loading}
+# Load required libraries.
+library(tidyverse)
+library(lubridate)
+
+# Read local csv file, munging it slightly.
+df_mega <- read_csv("mega.csv")
+df_mega %>% mutate(TIMESTAMP = ymd_hm(TIMESTAMP)) %>% drop_na() %>% 
+  select(TIMESTAMP, Delta_18O, Delta_D, Location = Name) -> df_mega
+df_mega %>% head() %>% print()
+```
+
+---
+
+## Plots
+```{r plots, out.width = "95%", fig.height=3}
+df_mega %>% 
+  ggplot(aes(x = TIMESTAMP, y = Concentration, color = variable)) +
+  geom_point(aes(y = Delta_18O, col = "Delta_18O")) + 
+  geom_point(aes(y = Delta_D, col = "Delta_D")) +
+  facet_wrap(Location ~ ., ncol = 8) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 1))
+```
+text
+---
+
+## Plots
+```{r fewer_plots, out.width = "95%", fig.height=3}
+df_mega %>% 
+  filter(Location %in% c("Taihu", "Teide")) %>% 
+  ggplot(aes(x = TIMESTAMP, y = Concentration, color = variable)) +
+  geom_point(aes(y = Delta_18O, col = "Delta_18O")) + 
+  geom_point(aes(y = Delta_D, col = "Delta_D")) +
+  facet_wrap(Location ~ .) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 1))
+```
+
+---
+
+## Plots
+```{r OD_plot, out.width = "95%", fig.height=3}
+df_mega %>% 
+  ggplot(aes(x = Delta_18O, y = Delta_D, color = Location)) +
+  geom_point()
+```
+
+
+---
+
+## Plots
+```{r OD_plot_all, out.width = "95%", fig.height=3}
+df_mega %>% 
+  ggplot(aes(x = Delta_18O, y = Delta_D, color = Location)) +
+  geom_point() + 
+  facet_wrap(Location ~ .)
+```
+
+
+---
+
+## Neural Network
+
+We attempt to classify Location with a neural network predicting on isotope concentration.
+
+```{r nn1, eval=FALSE}
+library(tidyverse)
+library(lubridate)
+library(caTools)
+library(h2o)
+
+# Preprocess the data
+data_file = "mega.csv"
+data_file %>% read_csv() %>% 
+  mutate(TIMESTAMP = ymd_hm(TIMESTAMP)) %>% 
+  drop_na() %>% 
+  select(Delta_18O, Delta_D, Location = Name) -> dataset 
+
+# Encode the Location
+loc_levels = dataset$Location %>% unique()
+dataset$Location = as.numeric(factor(dataset$Location, 
+                                     levels = loc_levels,
+                                     labels = 1:length(loc_levels)))
+```
+---
+
+## Neural Network
+Nothing fancy here.
+```{r nn2, eval=FALSE}
+set.seed(123)
+split = sample.split(dataset$Location, SplitRatio = 0.8)
+training_set = subset(dataset, split == TRUE)
+test_set = subset(dataset, split == FALSE)
+
+training_set[-3] = scale(training_set[-3])
+test_set[-3] = scale(test_set[-3])
+```
+
+---
+
+## Neural Network
+Launch h20 localhost server, build the model, and predict.
+
+```{r nn3, eval=FALSE}
+h2o.init(nthreads = -1)
+classifier = h2o.deeplearning(y = 'Location',
+                              training_frame = as.h2o(training_set), 
+                              activation = 'Tanh',
+                              epochs = 100, 
+                              train_samples_per_iteration = -2) 
+
+prob_pred = h2o.predict(classifier, newdata = as.h2o(training_set[-3]))
+y_pred = (prob_pred > 0.5)
+h2o.shutdown()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
